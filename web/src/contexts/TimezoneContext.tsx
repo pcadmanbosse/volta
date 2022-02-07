@@ -1,19 +1,20 @@
 import { createContext, useEffect, useState } from "react";
 import { getTimezones } from "../api/api";
-import { ClockContextProps } from "./ClockContextPropsType";
+import { ContextProps } from "./ContextPropType";
 
-export const TimezoneContext = createContext({timezones:[]});
+export const TimezoneContext = createContext({timezones:[], selectedTimezone: 'Europe/Paris', setSelectedTimezone: (val: string) =>{}});
 
-const TimezoneContextProvider = ({children}: ClockContextProps) =>{
+const TimezoneContextProvider = ({children}: ContextProps) =>{
   const [timezones, setTimezones] = useState([]);
-
+  const [selectedTimezone, setSelectedTimezone] = useState("Europe/Paris");
+  
   useEffect(() =>{
     getTimezones().then(tz =>{
-      // setTimezones(tz)
+      setTimezones(tz.data);
     })
   }, [])
 
-  return <TimezoneContext.Provider value={{timezones}}>
+  return <TimezoneContext.Provider value={{timezones, selectedTimezone, setSelectedTimezone}}>
     {children}
   </TimezoneContext.Provider>
 }

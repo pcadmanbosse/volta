@@ -1,14 +1,14 @@
-import React from 'react';
-import Clock from './components/Clock';
+import TimezoneClock from './components/TimezoneClock';
 import ClockContextProvider from './contexts/ClockContext';
+import TimezoneContextProvider from './contexts/TimezoneContext';
 
 function App() {
   return (
-    <div className="App">
-      <ClockContextProvider >
-        <Clock />
-      </ClockContextProvider>
-    </div>
+        <TimezoneContextProvider>
+        <ClockContextProvider >
+          <TimezoneClock />
+        </ClockContextProvider>
+        </TimezoneContextProvider>
   );
 }
 

@@ -1,14 +1,24 @@
-import { createContext, useEffect, useState } from "react";
-import { ClockContextProps } from "./ClockContextPropsType";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getTimeWebsocket } from "../api/api";
+import { ContextProps } from "./ContextPropType";
+import { TimezoneContext } from "./TimezoneContext";
 
 export const ClockContext = createContext({time: "0:0:0", online: false});
 
-const ClockContextProvider = ({children}: ClockContextProps) =>{
+const ClockContextProvider = ({children}: ContextProps) =>{
   const [time, setTime] = useState("0:0:0");
   const [online, setOnline] = useState(false);
+  const {selectedTimezone} = useContext(TimezoneContext);
+  const [webSocket, setWs] = useState<WebSocket>();
 
   useEffect(() =>{
-    const ws = new WebSocket("ws://localhost:8000/ws");
+    if(selectedTimezone && selectedTimezone !== "" && online){
+      webSocket?.send(selectedTimezone);
+    }
+  }, [selectedTimezone, webSocket, online]);
+
+  useEffect(() =>{
+    const ws = getTimeWebsocket();
 
     ws.onopen = () =>{
       setOnline(true);
@@ -21,6 +31,8 @@ const ClockContextProvider = ({children}: ClockContextProps) =>{
     ws.onmessage = (event) =>{
       setTime(JSON.parse(event.data).time);
     };
+
+    setWs(ws);
 
     return () =>{
       ws.close();

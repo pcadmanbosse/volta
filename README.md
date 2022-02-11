@@ -4,7 +4,7 @@ The aim of the project is to display a Clock.
 
 ## Running the project in development mode:
 
-Run the following commannds. By default the page will be visible at localhost:3000
+Run the following commands. By default the page will be visible at localhost:3000
 
 ### Front-end:
 

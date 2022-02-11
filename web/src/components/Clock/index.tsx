@@ -1,10 +1,14 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ClockContext } from "../../contexts/ClockContext";
 import ClockBackground from '../../resources/clock_background.svg';
 import styled from "styled-components";
 
 export type ClockProps = {
   time: number
+}
+
+interface ClockElementProps {
+  $angle: number
 }
 
 const ClockBase = styled("div")`
@@ -35,9 +39,6 @@ const ClockContainer = styled("div")`
   }
 `
 
-interface ClockElementProps {
-  $angle: number
-}
 const Handle = styled("div")<ClockElementProps>`
   position: absolute;
   top: 50%;
@@ -54,8 +55,8 @@ const Hours = styled(Handle)`
 `
 
 const Minutes = styled(Handle)`
-width: 17vh;
-background: black;`
+  width: 17vh;
+  background: black;`
 
 const Seconds = styled(Handle)`
   background: red;
@@ -64,14 +65,25 @@ const Seconds = styled(Handle)`
 
 const Clock = () =>{
   const {time, online} = useContext(ClockContext);
+  
+  const [secondsAngle, setSecondsAngle] = useState(0);
+  const [minutesAngle, setMinutesAngle] = useState(0);
+  const [hoursAngle, setHoursAngle] = useState(0);
+ 
+  useEffect(() =>{
+    const [hours, minutes, seconds] = time.split(":").map(val => parseInt(val));
+    setHoursAngle((360/12)*((hours%12)-3) + ((360/60)*(minutes)/12));
+    setMinutesAngle((360/60)*(minutes-15));
+    setSecondsAngle((360/60)*(seconds-15))
+  }, [time])
+  
   if(!online){
     return <div>Loading...</div>
   }
-  const [hours, minutes, seconds] = time.split(":").map(val => parseInt(val));
   return <ClockContainer><ClockBase>
-        <Seconds $angle={(360/60)*(seconds-15)}/>
-        <Minutes $angle={(360/60)*(minutes-15)}/>
-    <Hours $angle={(360/12)*((hours%12)-3) + ((360/60)*(minutes)/12)}/>
+        <Seconds $angle={secondsAngle}/>
+        <Minutes $angle={minutesAngle}/>
+    <Hours $angle={hoursAngle}/>
   </ClockBase></ClockContainer>
 }
 

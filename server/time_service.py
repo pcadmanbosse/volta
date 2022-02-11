@@ -1,15 +1,10 @@
 from datetime import datetime
-from typing import Dict, List
+from typing import List
 import pytz
-from websockets import InvalidMessage
 
 
 def get_timezones() -> List[str]:
     return pytz.all_timezones
-
-
-def name_timezone() -> Dict[str, List[str]]:
-    return {}
 
 
 def validate_timezone(requested_timezone: str) -> bool:

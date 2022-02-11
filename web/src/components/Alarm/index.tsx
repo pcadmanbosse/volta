@@ -27,7 +27,7 @@ const Alarm = () =>{
   const {time} = useContext(ClockContext);
 
   useEffect(() =>{
-    if((time.substring(0, 5) === alarmTime as string) && on){
+    if((time.substring(0, 5) === alarmTime) && on){
       setRinging(true);
     }
   }, [time, alarmTime, on])

@@ -1,23 +1,23 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {BsFillAlarmFill, BsAlarm} from "react-icons/bs";
 import TimePicker, {TimePickerValue} from "react-time-picker";
 import styled from "styled-components";
 import { ClockContext } from "../../contexts/ClockContext";
 const AlarmSound = require("../../resources/beep.mp3");
 
-const AlarmContainer = styled("div")`
+const AlarmContainer = memo(styled("div")`
   display: grid;
   grid-template-columns: 1fr 9fr;
-`
+`);
 
-const IconContainer = styled("div")`
+const IconContainer = memo(styled("div")`
   display: flex;
   justify-content: center;
   align-items: center;
   :hover{
     cursor: pointer;
   }
-`
+`);
 
 const Alarm = () =>{
   const [alarmTime, setAlarmTime] = useState<TimePickerValue>("")
@@ -42,17 +42,22 @@ const Alarm = () =>{
     }
   }, [ringing, audio]);
 
-  const handleClick = () =>{
+  const handleClick = useCallback(() =>{
     setOn((previousOn) => !previousOn);
     setRinging(false);
-  };
+  }, [setOn, setRinging]);
+
+  const Icons = useMemo(() =>
+    <IconContainer onClick={handleClick}>
+          {on && <BsFillAlarmFill />}
+          {!on && <BsAlarm />}
+        </IconContainer>
+  , [on, handleClick]);
 
   return <AlarmContainer>
-    <IconContainer onClick={handleClick}>
-      {on && <BsFillAlarmFill />}
-      {!on && <BsAlarm />}
-      </IconContainer>
-      <TimePicker disableClock value={alarmTime} onChange={setAlarmTime}/></AlarmContainer>
+        {Icons}
+        <TimePicker disableClock value={alarmTime} onChange={setAlarmTime}/>
+      </AlarmContainer>
 }
 
 export default Alarm;

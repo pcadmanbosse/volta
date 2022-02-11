@@ -2,13 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { ClockContext } from "../../contexts/ClockContext";
 import ClockBackground from '../../resources/clock_background.svg';
 import styled from "styled-components";
+import { Hours, Minutes, Seconds } from "./Handle";
 
 export type ClockProps = {
   time: number
-}
-
-interface ClockElementProps {
-  $angle: number
 }
 
 const ClockBase = styled("div")`
@@ -39,30 +36,6 @@ const ClockContainer = styled("div")`
   }
 `
 
-const Handle = styled("div")<ClockElementProps>`
-  position: absolute;
-  top: 50%;
-  height: 1px;
-  left: 50%;
-  transform: rotate(${(props) => props.$angle}deg);
-  transform-origin: left;
-`
-
-const Hours = styled(Handle)`
-  width: 12vh;
-  height: 3px;
-  background: black;
-`
-
-const Minutes = styled(Handle)`
-  width: 17vh;
-  background: black;`
-
-const Seconds = styled(Handle)`
-  background: red;
-  width: 18vh;
-`
-
 const Clock = () =>{
   const {time, online} = useContext(ClockContext);
   
@@ -80,11 +53,13 @@ const Clock = () =>{
   if(!online){
     return <div>Loading...</div>
   }
-  return <ClockContainer><ClockBase>
+  return <ClockContainer>
+    <ClockBase>
         <Seconds $angle={secondsAngle}/>
         <Minutes $angle={minutesAngle}/>
-    <Hours $angle={hoursAngle}/>
-  </ClockBase></ClockContainer>
+        <Hours $angle={hoursAngle}/>
+    </ClockBase>
+  </ClockContainer>
 }
 
 export default Clock;
